@@ -1,6 +1,7 @@
 package org.example.model.entities;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.util.Objects;
 
 public class Department implements Serializable {
