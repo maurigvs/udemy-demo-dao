@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.model.dao.DaoFactory;
+import org.example.model.dao.SellerDao;
 import org.example.model.entities.Department;
 import org.example.model.entities.Seller;
 
@@ -9,10 +11,11 @@ public class MainDAO {
 
     public static void main(String[] args){
 
-        Department dep = new Department(1, "Departamento");
-        System.out.println(dep);
+        SellerDao dao = DaoFactory.createSellerDao();
 
-        Seller sel = new Seller(21, "Bob", "bob@gmail.com", new Date(), 3000.00, dep);
-        System.out.println(sel);
+        Seller seller = dao.findById(3);
+
+        System.out.println(seller);
+
     }
 }
