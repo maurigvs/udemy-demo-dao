@@ -21,7 +21,8 @@ public class MainTransaction {
 
             int rows1 = st.executeUpdate("update seller set BaseSalary = 2090 where DepartmentId = 1");
 
-            /*int x = 1;
+            /* Force Exception
+            int x = 1;
             if(x < 2){
                 throw new SQLException("Fake error");
             }*/
