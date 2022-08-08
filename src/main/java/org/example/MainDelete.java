@@ -1,35 +1,31 @@
 package org.example;
 
 import org.example.db.DB;
+import org.example.db.DbIntegrityException;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 
-public class ProgramaAtualizar {
+public class MainDelete {
 
     public static void main(String[] args) {
 
         Connection conn;
         PreparedStatement ps = null;
 
-        String updateQuery = "update seller " +
-                "set BaseSalary = BaseSalary+? " +
-                "where DepartmentId = ?";
+        String deleteQuery = "delete from department where id = ?";
 
         try{
             conn = DB.getConnection();
-            ps = conn.prepareStatement(updateQuery);
+            ps = conn.prepareStatement(deleteQuery);
 
-            ps.setDouble(1, 200.00);
-            ps.setInt(2, 2);
+            ps.setInt(1, 4);
 
             int rowsAffected = ps.executeUpdate();
 
             System.out.println("Done! Rows affected: " + rowsAffected);
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DbIntegrityException(e.getMessage());
         } finally {
             DB.closeStatement(ps);
             DB.closeConnection();

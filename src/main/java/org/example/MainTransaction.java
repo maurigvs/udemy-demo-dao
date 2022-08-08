@@ -7,7 +7,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ProgramaTransacoes {
+public class MainTransaction {
 
     public static void main(String[] args) {
 

@@ -6,7 +6,7 @@ import java.sql.*;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
-public class ProgramaCadastrar {
+public class MainInsert {
 
     public static void main(String[] args) {
 
