@@ -2,13 +2,12 @@ package org.example.model.dao.impl;
 
 import org.example.db.DB;
 import org.example.db.DbException;
+import org.example.db.DbIntegrityException;
 import org.example.model.dao.SellerDao;
 import org.example.model.entities.Department;
 import org.example.model.entities.Seller;
 
 import java.sql.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +49,7 @@ public class SellerDaoJDBC implements SellerDao {
                     obj.setId(id);
                     System.out.println("Id created: " + id);
                 }
+                rs.close();
             } else {
                 throw new DbException("No rows affected!");
             }
@@ -58,18 +58,58 @@ public class SellerDaoJDBC implements SellerDao {
             e.printStackTrace();
         } finally {
             DB.closeStatement(ps);
-            DB.closeConnection();
         }
     }
 
     @Override
     public void update(Seller obj) {
 
+        PreparedStatement ps = null;
+
+        String updateQuery = "UPDATE seller " +
+                "SET Name = ?, Email = ?, BirthDate = ?, BaseSalary = ?, DepartmentId = ? " +
+                "WHERE Id = ?";
+
+        try{
+            ps = conn.prepareStatement(updateQuery);
+
+            ps.setString(1, obj.getName());
+            ps.setString(2, obj.getEmail());
+            ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+            ps.setDouble(4, obj.getBaseSalary());
+            ps.setInt(5, obj.getDepartment().getId());
+            ps.setInt(6, obj.getId());
+
+            int rowsAffected = ps.executeUpdate();
+            System.out.println("Done! Rows affected: " + rowsAffected);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DB.closeStatement(ps);
+        }
+
     }
 
     @Override
     public void deleteById(Integer id) {
 
+        PreparedStatement ps = null;
+        String deleteQuery = "delete from seller where id = ?";
+
+        try{
+            ps = conn.prepareStatement(deleteQuery);
+            ps.setInt(1, id);
+
+            int rowsAffected = ps.executeUpdate();
+
+            System.out.println("Done! Rows affected: " + rowsAffected);
+
+        } catch (SQLException e) {
+            throw new DbIntegrityException(e.getMessage());
+        } finally {
+            DB.closeStatement(ps);
+        }
     }
 
     @Override
