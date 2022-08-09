@@ -6,10 +6,9 @@ import org.example.model.dao.SellerDao;
 import org.example.model.entities.Department;
 import org.example.model.entities.Seller;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,6 +25,41 @@ public class SellerDaoJDBC implements SellerDao {
     @Override
     public void insert(Seller obj) {
 
+        PreparedStatement ps = null;
+
+        String insertQuery = "insert into seller " +
+                "(Name, Email, BirthDate, BaseSalary, DepartmentId) " +
+                "values " +
+                "(?, ?, ?, ?, ?)";
+
+        try{
+            ps = conn.prepareStatement(insertQuery, Statement.RETURN_GENERATED_KEYS);
+
+            ps.setString(1, obj.getName());
+            ps.setString(2, obj.getEmail());
+            ps.setDate(3, new java.sql.Date(obj.getBirthDate().getTime()));
+            ps.setDouble(4, obj.getBaseSalary());
+            ps.setInt(5, obj.getDepartment().getId());
+
+            int rowsAffected = ps.executeUpdate();
+
+            if(rowsAffected > 0){
+                ResultSet rs = ps.getGeneratedKeys();
+                if(rs.next()){
+                    int id = rs.getInt(1);
+                    obj.setId(id);
+                    System.out.println("Id created: " + id);
+                }
+            } else {
+                throw new DbException("No rows affected!");
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            DB.closeStatement(ps);
+            DB.closeConnection();
+        }
     }
 
     @Override
@@ -90,7 +124,7 @@ public class SellerDaoJDBC implements SellerDao {
     @Override
     public List<Seller> findAll() {
 
-        List<Seller> list = null;
+        List<Seller> list;
         PreparedStatement st = null;
         ResultSet rs = null;
         String query = "SELECT seller.*, department.Name AS DepName " +
@@ -127,7 +161,7 @@ public class SellerDaoJDBC implements SellerDao {
     @Override
     public List<Seller> findByDepartment(Department department) {
 
-        List<Seller> list = null;
+        List<Seller> list;
         PreparedStatement st = null;
         ResultSet rs = null;
         String query = "SELECT seller.*, department.Name AS DepName " +
