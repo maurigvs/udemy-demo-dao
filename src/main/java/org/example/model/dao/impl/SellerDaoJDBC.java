@@ -34,7 +34,7 @@ public class SellerDaoJDBC implements SellerDao {
     }
 
     @Override
-    public void deletebyId(Integer id) {
+    public void deleteById(Integer id) {
 
     }
 
