@@ -22,5 +22,9 @@ public class MainDao {
         List<Seller> s2 = dao.findByDepartment(dep);
         s2.forEach(System.out::println);
 
+        System.out.println("Testing Seller findAll: ");
+        s2 = dao.findAll();
+        s2.forEach(System.out::println);
+
     }
 }
